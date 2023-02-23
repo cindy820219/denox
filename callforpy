@@ -1,0 +1,102 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
+using System.Diagnostics;
+// code reference: https://www.796t.com/content/1545323704.html 
+
+namespace callforpy
+{
+    public partial class Form1 : Form
+    {
+        public Form1() 
+        {
+            InitializeComponent();
+        }
+
+        string[] inNO_Array = new string[2];    // 1. string sensor inNO data;
+        string[] inNO2_Array = new string[2];   // 2. string sensor inNO2 data;
+        string[] outNO_Array = new string[2];   // 3. string sensor outNO data;
+        string[] outNO2_Array = new string[2];  // 4. string sensor outNO2 data;
+        string[] outH2_Array = new string[2];   // 5. string sensor outH2 data;
+        string[] inTemp_Array = new string[2];  // 6. string sensor inTemperature data;
+
+        string file_python_code = @"hellopy.py";    // python code 檔名
+        string path = "C:\\Users\\nien10\\Desktop\\hellopy.py";   // 絕對路徑
+
+        private void textBox1_TextChanged(object sender, EventArgs e) 
+        {
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e) 
+        {
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // inNO Array 存取 sensor data
+            inNO_Array[0] = "inNO";    // 取得 sensor 編號 
+            inNO_Array[1] = textBox1.Text;    // 取得 textBox1 值給
+
+            RunPythonScript(file_python_code, "-u", inNO_Array);  // 呼叫 python，並傳送 inNO Array [inNOx][textBox1] 給 python
+
+        }
+
+        // 呼叫 python function
+        // 呼叫 python 核心程式碼
+        public static void RunPythonScript(string sArgName, string args = "", params string[] teps)
+        {
+            Process p = new Process();
+            p.StartInfo.FileName = "C:\\Users\\nien10\\AppData\\Local\\Programs\\Python\\Python39\\python.exe"; // python3.exe 之絕對路徑
+            string file_python_code = "C:\\Users\\nien10\\Desktop\\hellopy.py";   // 絕對路徑
+
+            foreach (string sigstr in teps)
+            {
+                file_python_code += " " + sigstr;//傳遞引數
+            }
+
+            file_python_code += " " + args;
+
+            p.StartInfo.Arguments = file_python_code;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.RedirectStandardError = true;
+            p.StartInfo.CreateNoWindow = true;
+
+            p.Start();
+            p.BeginOutputReadLine();
+            p.OutputDataReceived += new DataReceivedEventHandler(p_OutputDataReceived);
+            Console.ReadLine();
+            p.WaitForExit();
+        }
+
+        // 輸出列印的資訊
+        static void p_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(e.Data))
+            {
+                AppendText(e.Data + Environment.NewLine);
+            }
+        }
+
+        public delegate void AppendTextCallback(string text);
+        public static void AppendText(string text)
+        {
+            Console.WriteLine(text);     //此處在控制檯輸出.py檔案print的結果
+        }
+        //no used
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
