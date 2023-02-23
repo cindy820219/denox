@@ -17,7 +17,8 @@ client_mqtt.on_connect = on_connect
 client_mqtt.connect("broker.emqx.io", 1883, 60)
 
 sensor_ID = "1111"
-data_ppm =  "111111111"
+data_ppm =  "987"
+payload = "payload"
 
 def function_send(sensor, data):
 
@@ -32,35 +33,41 @@ def function_send(sensor, data):
     file.close()
     '''
     
-    while(1):
+    # while(1):
 
-        # add time
-        dateandtime = str(datetime.now().isoformat(timespec='seconds'))
-        dateandtime = dateandtime.replace('T',',')
-        print('dateandtime:',dateandtime)
+    # add time
+    dateandtime = str(datetime.now().isoformat(timespec='seconds'))
+    file = open('C_call_py.txt', 'w')
+    file.write(dateandtime)
+    file.close()
 
-        payload_NH3 = 'NH3,'+dateandtime+','+data_ppm
-        print(payload_NH3)
-
-        client_mqtt.publish('itris300/topic', payload=payload_NH3, qos=0, retain=False)
-        print(f"send {payload_NH3} to itris300/topic")
-        # client_mqtt.publish('denox/sensor1', payload=payload_NH3, qos=0, retain=False)
-        # print(f"send {payload_NH3} to denox/sensor1")
+    dateandtime = dateandtime.replace('T',',')
+    print('dateandtime:',dateandtime)
 
 
-        print("~~~~~~~~~~~~~~~~~")
-        
-        time.sleep(5);
+    payload_sensor = payload+sensor_ID
+    # payload_inNO = 'inNO,' + dateandtime + ',' + data_ppm
+    payload_sensor = sensor_ID + ',' + dateandtime + ',' + data_ppm
+    print(payload_sensor)
+    
+    
+    client_mqtt.publish('denox/topic', payload=payload_sensor, qos=0, retain=False)
+    print(f"send {payload_sensor} to denox/topic")
+    # client_mqtt.publish('payload_inNO', payload=payload_inNO, qos=0, retain=False)
+    # print(f"send {payload_inNO} to payload_inNO")
 
 
-    sensor = sensor + data
+    # print("~~~~~~~~~~~~~~~~~")
+    
+    # time.sleep(5);
+
     return sensor, data 
 
 if __name__ == '__main__':
 
-    # be called from the C# !
-    # print(function_send(sys.argv[1],sys.argv[2]))
+    ### be called from the C# !
+    print(function_send(sys.argv[1],sys.argv[2]))
     
-    # test on local 
-    print(function_send(sensor_ID,data_ppm))
+    ### test on local 
+    # print(function_send(sensor_ID,data_ppm))
 
