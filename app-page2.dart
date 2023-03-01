@@ -1,102 +1,81 @@
-import 'package:airclean/page2.dart';
+import 'package:airclean/page3.dart';
 import 'package:flutter/material.dart';
 
-// main
-void main() {
-  return runApp(MaterialApp(
-    home: new HomePage(),
-  ));
-}
+var machine = ["H2 deNOx 模組"];
 
-// HomePage
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class Page2 extends StatelessWidget {
+  const Page2({Key? key}) : super(key: key);
 
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-
-  // textEdit bar
-  // final TextEditingController account = new TextEditingController();
-  // final TextEditingController passwd = new TextEditingController();
-  final _account =  TextEditingController();
-  final _password =  TextEditingController();
-
+  // override and AppBar
   @override
   Widget build(BuildContext context) {
-    // Scaffold
     return Scaffold(
+
       appBar: AppBar(
-        title: const Text(
-          '登入帳號與密碼',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+        title: const Text('模組列表'),
+        leading: BackButton(onPressed: () {
+          Navigator.of(context).pop('----- here !! from page 2');
+        },),),
 
-      // body
-      body:
-      Column(
-        children: [
-          // 登入帳號密碼
-          Container(
-            padding: const EdgeInsets.only(top: 50.0, left: 50.0,right: 50.0),
-            child: TextField(
-              controller: _account,
-              style: const TextStyle(fontSize: 40, color: Colors.white),
-              decoration: const InputDecoration(
-                filled: true,
-                fillColor: Colors.lightBlueAccent,
-                border: InputBorder.none,
-                hintText: '帳號',
-                hintStyle: TextStyle(color: Colors.white60), ),
-            ),
-          ),
+      body: ListView.builder(
+          itemCount: machine == null ? 0 : machine.length,
+          itemBuilder: (BuildContext context, int index) {
+            return GestureDetector( //You need to make my child interactive
+              child: Card( //I am the clickable child
+                child: Column(
+                  children: <Widget>[
+                    //new Image.network(video[index]),
+                    const Padding(padding: EdgeInsets.all(10.0)),
+                    Text(machine[index],
+                      style: const TextStyle(fontSize: 20, color: Colors.blue),
+                    ),
+                  ],
+                ),),
 
-          Container(
-            padding: const EdgeInsets.only(top: 50.0, left: 50.0,right: 50.0),
-            child: TextField(
-              controller: _password,
-              style: const TextStyle(fontSize: 40, color: Colors.white),
-              decoration: const InputDecoration(
-                filled: true,
-                fillColor: Colors.lightBlueAccent,
-                border: InputBorder.none,
-                hintText: '密碼',
-                hintStyle: TextStyle(color: Colors.white60),
-              ),
-            ),
-          ),
-
-          Container(
-              padding: const EdgeInsets.only(top: 50.0, left: 50.0,right: 50.0),
-              child:  GestureDetector(
-                onTap: () {
-                  print('account: ${_account.text}');
-                  print('password: ${_password.text}');
-                  btnEvent(); },
-                child: const Text('登入', style: TextStyle(fontSize: 40, color: Colors.blueAccent),),
-              )
-          ) // onPressed: btnEvent,), )
-        ],
-      ),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Page3(machine[index]))).then((result) {
+                  print(result); } ); },
+              // MaterialPageRoute(builder: (context) => const Page3('VαIII-130G'))).then((result) {
+              //   print(result); } );},
+            );
+          }),
     );
   }
-
-  void btnEvent() {
-    // print(passwd.text);
-    if (_password.text == '0000') {
-      print('Correct !!! ');
-
-      // /jump to page2
-      NavigatorState nav = Navigator.of(context);
-      nav.push(MaterialPageRoute(builder: (context)=> Page2())).then((result){
-        print(result);
-      });
-    }
-    else {
-      print('error ..');
-    }
-  }
 }
+
+// body:
+//   Column(
+//     children: [
+//       Container(
+//         margin: const EdgeInsets.all(20.0), ),
+//
+//       ElevatedButton(
+//         child: const Text('機台 1 - VαIII-130G ', style: TextStyle(fontSize: 20, color: Colors.white), ),
+//         onPressed: () {
+//           Navigator.push(
+//             context,
+//             MaterialPageRoute(builder: (context) => Page3('VαIII-130G'))).then((result){
+//               print(result); } );} ),
+//
+//       ElevatedButton(
+//         child: const Text('機台 2 - OOOXXXX ', style: TextStyle(fontSize: 20, color: Colors.white),),
+//           onPressed: () {
+//             Navigator.push(
+//                 context,
+//                 MaterialPageRoute(builder: (context) => Page3('OOOXXXX'))).then((result){
+//               print(result); } );} ),
+//
+//       ElevatedButton(
+//         child: const Text('機台 3 - XXXXOOO ', style: TextStyle(fontSize: 20, color: Colors.white),),
+//           onPressed: () {
+//             Navigator.push(
+//                 context,
+//                 MaterialPageRoute(builder: (context) => Page3('XXXXOOO'))).then((result){
+//               print(result); } );} ),
+//     ],
+//   )
+//       );
+//     }
+// }
