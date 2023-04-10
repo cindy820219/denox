@@ -18,12 +18,11 @@ client_mqtt.connect("broker.emqx.io", 1883, 60)
 
 sensor_ID = "1111"
 data_ppm =  "987"
-payload = "payload"
 
 def function_send(sensor, data):
 
-    sensor_ID = sensor
-    data_ppm = data
+    sensor_ID = sensor # inNO
+    data_ppm = data # 123456789
 
     '''
     ### write to the file 
@@ -45,19 +44,18 @@ def function_send(sensor, data):
     print('dateandtime:',dateandtime)
 
 
-    payload_sensor = payload+sensor_ID
     # payload_inNO = 'inNO,' + dateandtime + ',' + data_ppm
-    payload_sensor = sensor_ID + ',' + dateandtime + ',' + data_ppm
-    print(payload_sensor)
+    payload_inNO = sensor_ID + ',' + dateandtime + ',' + data_ppm
+    print(payload_inNO)
     
     
-    client_mqtt.publish('denox/topic', payload=payload_sensor, qos=0, retain=False)
-    print(f"send {payload_sensor} to denox/topic")
+    client_mqtt.publish('denox/topic', payload=payload_inNO, qos=0, retain=False)
+    print(f"send {payload_inNO} to denox/topic")
     # client_mqtt.publish('payload_inNO', payload=payload_inNO, qos=0, retain=False)
     # print(f"send {payload_inNO} to payload_inNO")
 
 
-    # print("~~~~~~~~~~~~~~~~~")
+    print("~~~~~~~~~~~~~~~~~")
     
     # time.sleep(5);
 
@@ -68,6 +66,6 @@ if __name__ == '__main__':
     ### be called from the C# !
     print(function_send(sys.argv[1],sys.argv[2]))
     
+    
     ### test on local 
     # print(function_send(sensor_ID,data_ppm))
-
